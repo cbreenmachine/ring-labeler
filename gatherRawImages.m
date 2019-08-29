@@ -39,6 +39,7 @@ for ff = 1:length(master_fol)
         stack(:,:,ii) = rgb2gray(imread(strcat(img_seq_fol, sub_fol_name, "/", img_list(ii).name)));
     end
     
+    
     % get rid of black padding
     stack2 = removePadding(stack);
     
@@ -56,6 +57,7 @@ end
 function pruned = pruneDirectory(directory)
 %PRUNED goes through directory and keeps only the numeric folders (e.g.
 %54321) and removes the weird ones (., ..)
+
 index = false(length(directory), 1);
 
 for ii = 1:length(directory)
@@ -66,6 +68,11 @@ for ii = 1:length(directory)
 end       
 pruned = directory;
 pruned(index, :) = [];
+
+% Provided by Cedric Wannaz 
+% sorts to account for 01 != 1 issue
+[~, reindex] = sort(str2double(regexp( {pruned.name}, '\d+', 'match', 'once' )));
+pruned = pruned(reindex);
 end
 
 function cropped_stack = removePadding(stack)
