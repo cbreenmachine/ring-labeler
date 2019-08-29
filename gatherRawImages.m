@@ -40,7 +40,8 @@ for ff = 1:length(master_fol)
     end
     
     
-    % get rid of black padding
+    % can add a black padding removal step but may mess up the homogeneity
+    % of data size
     stack2 = removePadding(stack);
     
     % omit the duplicate frames
@@ -76,17 +77,36 @@ pruned = pruned(reindex);
 end
 
 function cropped_stack = removePadding(stack)
-%REMOVEPADDING removes the large black edges that are an artifact of
-%ClearVolume.
+%REMOVEPADDING 
+
+SZ = 512; % may need to change
 
 % one imae out of the many
 layer = stack(:,:,1);
 
+% initialize matrix
+cropped_stack = zeros(SZ, SZ, size(stack, 3));
+
 % find the bounding
 [row, col] = find(layer > 0);
 
-% crop it
-cropped_stack = stack(min(row):max(row), min(col):max(col), :); % crop the stored hyper cube
+% min bounding box
+left = min(col);
+bottom = min(row);
+right = max(col);
+top = max(row);
+
+% width and height
+width = right - left + 1; % damn matlab
+height = top - bottom + 1;
+
+% make sure we are not omiting anything good
+if ((width > SZ) || (height > SZ))
+    msg = strcat("Cutting out too much of the image, increase SZ in removePadding: ", string(hieght, width));
+    error(msg)
+end
+
+cropped_stack(1:width, 1:height, :) = stack(left:right, bottom:top, :); % crop the stored hyper cube
 
 end
 
@@ -132,6 +152,8 @@ for zz = 1:num_layers
    imwrite(stack(:,:,zz), full_path)
 end
 
+% disp(size(stack))
 msg = strcat("Wrote ", string(num_layers), " images to ", save_fol);
 disp(msg)
+
 end
