@@ -89,24 +89,29 @@ cropped_stack = zeros(SZ, SZ, size(stack, 3));
 
 % find the bounding
 [row, col] = find(layer > 0);
+% stack(min(row):max(row), min(col):max(col)) --> idiom from old code
 
 % min bounding box
-left = min(col);
-bottom = min(row);
-right = max(col);
-top = max(row);
+left = min(row);
+bottom = min(col);
+right = max(row);
+top = max(col);
+
+% margin compuation - how much extra space is there?
+x_margin = floor((SZ - (top - bottom)) / 2);
+y_margin = floor((SZ - (right - left)) / 2);
 
 % width and height
-width = right - left + 1; % damn matlab
-height = top - bottom + 1;
+width = right - left; % damn matlab
+height = top - bottom;
 
 % make sure we are not omiting anything good
-if ((width > SZ) || (height > SZ))
+if ((x_margin < 0) || (y_margin < 0))
     msg = strcat("Cutting out too much of the image, increase SZ in removePadding: ", string(hieght, width));
     error(msg)
 end
 
-cropped_stack(1:width, 1:height, :) = stack(left:right, bottom:top, :); % crop the stored hyper cube
+cropped_stack(x_margin:width+x_margin, y_margin:height + y_margin, :) = stack(left:right, bottom:top, :); % crop the stored hyper cube
 
 end
 
