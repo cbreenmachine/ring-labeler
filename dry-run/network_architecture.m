@@ -41,19 +41,6 @@ trainingData = pixelLabelImageDatastore(imdsTrain, pxdsTrain);
 
 net = trainNetwork(trainingData, layers, opts);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 %% Train/Test split function
 function [imdsTrain, imdsVal, imdsTest, pxdsTrain, pxdsVal, pxdsTest] = partitionData(imds,pxds)
 % copied verbatim form https://www.mathworks.com/help/vision/examples/semantic-segmentation-using-deep-learning.html
