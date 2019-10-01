@@ -14,7 +14,7 @@ load('imds.mat')
 %% Layers
 numFilters = 64;
 filterSize = 3;
-numClasses = 2;
+numClasses = 3;
 
 
 layers = [
