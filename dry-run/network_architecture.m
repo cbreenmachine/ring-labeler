@@ -5,7 +5,7 @@
 load('pxds.mat')
 load('imds.mat')
 
-%% Split into trian and test
+%% Split into train and test
 [imdsTrain, imdsVal, imdsTest, pxdsTrain, pxdsVal, pxdsTest] = partitionData(imds,pxds);
 
 
